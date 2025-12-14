@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Запись на прием - МедДиагностика{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-calendar-check"></i> Запись на прием
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'home' %}" class="btn btn-secondary me-md-2">Отмена</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Записаться
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим поле даты и времени
+    const dateInput = document.querySelector('input[type="datetime-local"]');
+    if (dateInput) {
+        // Убеждаемся, что минимальная дата установлена правильно
+        const now = new Date();
+        now.setMinutes(0, 0, 0); // Округляем до часа
+        if (now.getMinutes() > 0) {
+            now.setHours(now.getHours() + 1);
+        }
+        const minDateTime = now.toISOString().slice(0, 16);
+        
+        if (!dateInput.getAttribute('min') || dateInput.getAttribute('min') < minDateTime) {
+            dateInput.setAttribute('min', minDateTime);
+        }
+        
+        // Убираем любые ограничения на максимальную дату
+        dateInput.removeAttribute('max');
+        
+        console.log('Поле даты настроено. Минимальная дата:', dateInput.getAttribute('min'));
+    }
+});
+</script>
+{% endblock %}
+
