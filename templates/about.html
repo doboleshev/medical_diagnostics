@@ -55,6 +55,72 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Контактная информация -->
+    {% with contact=contact_info.first %}
+    {% if contact %}
+    <div class="row mt-5">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-telephone"></i> Контактная информация
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-geo-alt-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Адрес</h6>
+                                    <p class="mb-0 text-muted">{{ contact.address }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-telephone-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Телефон</h6>
+                                    <p class="mb-0">
+                                        <a href="tel:{{ contact.phone }}" class="text-decoration-none">{{ contact.phone }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-envelope-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Email</h6>
+                                    <p class="mb-0">
+                                        <a href="mailto:{{ contact.email }}" class="text-decoration-none">{{ contact.email }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-clock-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Режим работы</h6>
+                                    <p class="mb-0 text-muted">{{ contact.working_hours|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'contact' %}" class="btn btn-primary">
+                            <i class="bi bi-envelope"></i> Связаться с нами
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
 </div>
 {% endblock %}
 

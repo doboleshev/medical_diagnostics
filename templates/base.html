@@ -83,9 +83,24 @@
                     <ul class="list-unstyled">
                         {% with contact=contact_info.first %}
                         {% if contact %}
-                        <li><i class="bi bi-geo-alt"></i> {{ contact.address }}</li>
-                        <li><i class="bi bi-telephone"></i> {{ contact.phone }}</li>
-                        <li><i class="bi bi-envelope"></i> {{ contact.email }}</li>
+                        <li class="mb-2">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                            <span>{{ contact.address }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-telephone-fill text-primary me-2"></i>
+                            <a href="tel:{{ contact.phone }}" class="text-white text-decoration-none">{{ contact.phone }}</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-envelope-fill text-primary me-2"></i>
+                            <a href="mailto:{{ contact.email }}" class="text-white text-decoration-none">{{ contact.email }}</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-clock-fill text-primary me-2"></i>
+                            <small>{{ contact.working_hours|linebreaks }}</small>
+                        </li>
+                        {% else %}
+                        <li class="text-muted">Контактная информация не указана</li>
                         {% endif %}
                         {% endwith %}
                     </ul>
