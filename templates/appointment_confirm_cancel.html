@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Отмена записи - МедДиагностика{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Отмена записи на прием
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <p>Вы уверены, что хотите отменить запись на прием?</p>
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h5>{{ appointment.service.name }}</h5>
+                            <p class="mb-1"><strong>Врач:</strong> {{ appointment.doctor.user.get_full_name }}</p>
+                            <p class="mb-1"><strong>Дата и время:</strong> {{ appointment.appointment_date|date:"d.m.Y H:i" }}</p>
+                            <p class="mb-0"><strong>Статус:</strong> 
+                                {% if appointment.status == 'pending' %}
+                                    <span class="badge bg-warning">Ожидает подтверждения</span>
+                                {% elif appointment.status == 'confirmed' %}
+                                    <span class="badge bg-success">Подтверждена</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary me-md-2">Отмена</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle"></i> Да, отменить запись
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
