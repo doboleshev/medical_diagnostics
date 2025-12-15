@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}О компании - МедДиагностика{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    {% if page_content %}
+    <div class="row mb-5">
+        <div class="col">
+            <h1 class="fw-bold">{{ page_content.title }}</h1>
+            <div class="mt-4">
+                {{ page_content.content|safe }}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row mb-5">
+        <div class="col">
+            <h1 class="fw-bold">О компании</h1>
+            <p class="lead">Мы предоставляем качественные медицинские диагностические услуги</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mb-5">
+        <div class="col">
+            <h2 class="fw-bold mb-4">Наши врачи</h2>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for doctor in doctors %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="card-img-top" alt="{{ doctor.user.get_full_name }}" style="height: 300px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <i class="bi bi-person-circle display-1 text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ doctor.user.get_full_name }}</h5>
+                    <p class="text-primary mb-2">{{ doctor.get_specialization_display }}</p>
+                    <p class="text-muted small mb-2">Стаж: {{ doctor.experience }} лет</p>
+                    <p class="card-text">{{ doctor.bio|safe|truncatechars:150 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Информация о врачах пока не добавлена.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Контактная информация -->
+    {% with contact=contact_info.first %}
+    {% if contact %}
+    <div class="row mt-5">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-telephone"></i> Контактная информация
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-geo-alt-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Адрес</h6>
+                                    <p class="mb-0 text-muted">{{ contact.address }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-telephone-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Телефон</h6>
+                                    <p class="mb-0">
+                                        <a href="tel:{{ contact.phone }}" class="text-decoration-none">{{ contact.phone }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-envelope-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Email</h6>
+                                    <p class="mb-0">
+                                        <a href="mailto:{{ contact.email }}" class="text-decoration-none">{{ contact.email }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="bi bi-clock-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold">Режим работы</h6>
+                                    <p class="mb-0 text-muted">{{ contact.working_hours|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'contact' %}" class="btn btn-primary">
+                            <i class="bi bi-envelope"></i> Связаться с нами
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}
+

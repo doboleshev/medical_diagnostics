@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Услуги - МедДиагностика{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-5">
+        <div class="col">
+            <h1 class="fw-bold">Наши услуги</h1>
+            {% if page_content %}
+                <p class="text-muted">{{ page_content.content|safe }}</p>
+            {% else %}
+                <p class="text-muted">Мы предлагаем широкий спектр диагностических услуг</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for service in services %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <div class="text-primary mb-2">
+                        <i class="bi {{ service.icon }} fs-3"></i>
+                    </div>
+                    <h5 class="card-title">{{ service.name }}</h5>
+                    <p class="card-text">{{ service.description|safe|truncatechars:150 }}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold text-primary fs-5">{{ service.price }} руб.</span>
+                        <small class="text-muted">{{ service.duration }} мин.</small>
+                    </div>
+                    <a href="{% url 'service_detail' service.slug %}" class="btn btn-primary w-100">
+                        Подробнее
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Услуги пока не добавлены.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Контактная информация -->
+    {% with contact=contact_info.first %}
+    {% if contact %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="card-title mb-3">
+                                <i class="bi bi-telephone-fill"></i> Нужна консультация?
+                            </h4>
+                            <p class="card-text mb-0">Свяжитесь с нами для получения дополнительной информации об услугах</p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="mb-2">
+                                <i class="bi bi-telephone me-2"></i>
+                                <a href="tel:{{ contact.phone }}" class="text-white text-decoration-none fw-bold fs-5">{{ contact.phone }}</a>
+                            </div>
+                            <div>
+                                <i class="bi bi-envelope me-2"></i>
+                                <a href="mailto:{{ contact.email }}" class="text-white text-decoration-none">{{ contact.email }}</a>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'contact' %}" class="btn btn-light">
+                                    <i class="bi bi-chat-dots"></i> Связаться с нами
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}
+
