@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Запись на прием - МедДиагностика{% endblock %}
+{% block title %}Запись на прием - Опора{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -25,6 +25,7 @@
 
                     <form method="post">
                         {% csrf_token %}
+                        {{ doctor_appointment_options|json_script:"doctor-appointment-options" }}
                         {{ form|crispy }}
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                             <a href="{% url 'home' %}" class="btn btn-secondary me-md-2">Отмена</a>
@@ -38,30 +39,10 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Находим поле даты и времени
-    const dateInput = document.querySelector('input[type="datetime-local"]');
-    if (dateInput) {
-        // Убеждаемся, что минимальная дата установлена правильно
-        const now = new Date();
-        now.setMinutes(0, 0, 0); // Округляем до часа
-        if (now.getMinutes() > 0) {
-            now.setHours(now.getHours() + 1);
-        }
-        const minDateTime = now.toISOString().slice(0, 16);
-        
-        if (!dateInput.getAttribute('min') || dateInput.getAttribute('min') < minDateTime) {
-            dateInput.setAttribute('min', minDateTime);
-        }
-        
-        // Убираем любые ограничения на максимальную дату
-        dateInput.removeAttribute('max');
-        
-        console.log('Поле даты настроено. Минимальная дата:', dateInput.getAttribute('min'));
-    }
-});
-</script>
 {% endblock %}
 
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'js/appointment-form.js' %}"></script>
+<script src="{% static 'js/appointment-date.js' %}"></script>
+{% endblock %}

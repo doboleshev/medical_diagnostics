@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 import os
 
@@ -27,15 +29,72 @@ class Service(models.Model):
         return self.name
 
 
+class Equipment(models.Model):
+    """Модель медицинского оборудования"""
+    name = models.CharField(max_length=200 , verbose_name="Название")
+    slug = models.SlugField(max_length=200 , unique=True , verbose_name="Адрес страницы")
+    summary = models.TextField(verbose_name="Краткое описание")
+    description = RichTextField(verbose_name="Подробное описание")
+    image = models.ImageField(upload_to='equipment/' , verbose_name="Фото")
+    is_active = models.BooleanField(default=True , verbose_name="Активно")
+    order = models.IntegerField(default=0 , verbose_name="Порядок отображения")
+
+    class Meta:
+        verbose_name = "Оборудование"
+        verbose_name_plural = "Оборудование"
+        ordering = ['order' , 'name']
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('equipment_detail' , kwargs={'slug': self.slug})
+
+
+class PatientProblem(models.Model):
+    """Проблема, с которой пациент может обратиться к врачу"""
+    doctor = models.ForeignKey(
+        'Doctor' ,
+        on_delete=models.CASCADE ,
+        related_name='patient_problem_items' ,
+        verbose_name="Врач" ,
+    )
+    title = models.CharField(max_length=255 , verbose_name="Проблема")
+    order = models.IntegerField(default=0 , verbose_name="Порядок отображения")
+    is_active = models.BooleanField(default=True , verbose_name="Активна")
+
+    class Meta:
+        verbose_name = "Проблема пациента"
+        verbose_name_plural = "Проблемы пациентов"
+        ordering = ['order' , 'title']
+
+    def __str__(self):
+        return self.title
+
+
 class Doctor(models.Model):
     """Модель врачей"""
-    SPECIALIZATION_CHOICES = [('diagnostic' , 'Врач-диагност') , ('radiologist' , 'Радиолог') ,
-                              ('cardiologist' , 'Кардиолог') , ('neurologist' , 'Невролог') ,
-                              ('therapist' , 'Терапевт') ,]
+    SPECIALIZATION_CHOICES = [
+        ('chief_physician' , 'Главный врач') ,
+        ('allergist_immunologist' , 'Врач аллерголог-иммунолог') ,
+        ('therapist' , 'Врач-терапевт') ,
+        ('surgeon' , 'Врач-хирург') ,
+        ('gynecologist' , 'Врач-акушер-гинеколог') ,
+        ('ophthalmologist' , 'Врач-офтальмолог') ,
+        ('pediatrician' , 'Врач-педиатр') ,
+        ('ultrasound' , 'Врач ультразвуковой диагностики') ,
+        ('otorhinolaryngologist' , 'Врач оториноларинголог') ,
+    ]
 
     user = models.OneToOneField(User , on_delete=models.CASCADE , related_name='doctor')
+    slug = models.SlugField(max_length=200 , unique=True , blank=True , verbose_name="Адрес страницы")
     specialization = models.CharField(max_length=100 , choices=SPECIALIZATION_CHOICES , verbose_name="Специализация")
     bio = RichTextField(verbose_name="Биография")
+    patient_problems = models.TextField(
+        blank=True ,
+        verbose_name="С какими проблемами работает" ,
+        help_text="Каждая проблема с новой строки." ,
+    )
     experience = models.IntegerField(verbose_name="Стаж (лет)")
     education = models.TextField(verbose_name="Образование")
     photo = models.ImageField(upload_to='doctors/' , null=True , blank=True)
@@ -51,6 +110,40 @@ class Doctor(models.Model):
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.get_specialization_display()}"
 
+    def get_absolute_url(self):
+        return reverse('doctor_detail' , kwargs={'slug': self.slug})
+
+    def get_patient_problems_list(self):
+        problems = list(
+            self.patient_problem_items.filter(is_active=True).values_list('title' , flat=True)
+        )
+        if problems:
+            return problems
+        if not self.patient_problems:
+            return []
+        return [
+            line.strip()
+            for line in self.patient_problems.splitlines()
+            if line.strip()
+        ]
+
+    def _build_slug(self):
+        source = self.user.get_full_name().strip() or self.user.username
+        slug = slugify(source , allow_unicode=True)
+        if not slug:
+            slug = slugify(self.user.username)
+        original = slug
+        counter = 1
+        while Doctor.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+            slug = f'{original}-{counter}'
+            counter += 1
+        return slug
+
+    def save(self , *args , **kwargs):
+        if not self.slug:
+            self.slug = self._build_slug()
+        super().save(*args , **kwargs)
+
 
 class Appointment (models.Model):
     """Модель записи на прием"""
@@ -59,6 +152,14 @@ class Appointment (models.Model):
 
     patient = models.ForeignKey(User , on_delete=models.CASCADE , related_name='appointments' , verbose_name="Пациент")
     doctor = models.ForeignKey(Doctor , on_delete=models.CASCADE , related_name='appointments' , verbose_name="Врач")
+    patient_problem = models.ForeignKey(
+        PatientProblem ,
+        on_delete=models.PROTECT ,
+        related_name='appointments' ,
+        verbose_name="Проблема обращения" ,
+        null=True ,
+        blank=True ,
+    )
     service = models.ForeignKey(Service , on_delete=models.CASCADE , related_name='appointments' ,
                                 verbose_name="Услуга")
     appointment_date = models.DateTimeField(verbose_name="Дата и время приема")

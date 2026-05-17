@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Оборудование - Опора{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Оборудование</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-2">Оборудование</h1>
+        <p class="lead mb-0">Современные диагностические системы экспертного класса для точных обследований.</p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-4">
+        {% for item in equipment_items %}
+        <div class="col-md-6">
+            <article class="equipment-card">
+                <a href="{{ item.get_absolute_url }}" class="equipment-card__image-wrap">
+                    <img src="{{ item.image.url }}" class="equipment-card__image" alt="{{ item.name }}">
+                </a>
+                <div class="equipment-card__body">
+                    <h2 class="h4 mb-3">{{ item.name }}</h2>
+                    <p class="text-muted mb-4">{{ item.summary }}</p>
+                    <a href="{{ item.get_absolute_url }}" class="btn btn-outline-brand">Подробнее</a>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info mb-0">Информация об оборудовании пока не добавлена.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <p class="equipment-disclaimer text-muted small mt-5 mb-0">Имеются противопоказания, необходима консультация специалиста.</p>
+</div>
+{% endblock %}

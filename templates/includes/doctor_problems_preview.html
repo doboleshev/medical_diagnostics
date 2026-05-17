@@ -1,0 +1,12 @@
+{% if doctor.get_patient_problems_list %}
+<div class="doctor-card__focus">
+    <p class="doctor-card__focus-title">С какими проблемами работает</p>
+    <ul class="doctor-card__problems list-unstyled mb-0">
+        {% for problem in doctor.get_patient_problems_list %}
+        {% if forloop.counter <= 4 %}
+        <li>{{ problem }}</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

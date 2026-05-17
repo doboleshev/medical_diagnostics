@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
+from .forms import DoctorAdminForm
 from .models import (
-    Service, Doctor, Appointment, TestResult,
+    Service, Equipment, Doctor, PatientProblem, Appointment, TestResult,
     ContactInfo, Feedback, PageContent
 )
 
@@ -16,20 +17,53 @@ class ServiceAdmin(admin.ModelAdmin):
     list_editable = ['price', 'order', 'is_active']
 
 
+class EquipmentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'is_active', 'order']
+    list_filter = ['is_active']
+    search_fields = ['name', 'summary', 'description']
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ['order', 'is_active']
+
+
+class PatientProblemInline(admin.TabularInline):
+    model = PatientProblem
+    extra = 1
+    fields = ('title', 'order', 'is_active')
+
+
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ['get_full_name', 'specialization', 'experience',
+    form = DoctorAdminForm
+    inlines = [PatientProblemInline]
+    list_display = ['get_full_name', 'slug', 'specialization', 'experience',
                     'is_active', 'order']
     list_filter = ['specialization', 'is_active']
-    search_fields = ['user__first_name', 'user__last_name', 'specialization']
+    search_fields = ['user__first_name', 'user__last_name', 'specialization', 'slug']
     list_editable = ['order', 'is_active']
+    filter_horizontal = ['services']
+    readonly_fields = ['slug']
+    fieldsets = (
+        ('Основное', {
+            'fields': (
+                'full_name', 'specialization', 'experience',
+                'is_active', 'order', 'slug',
+            ),
+        }),
+        ('О враче', {
+            'fields': ('education', 'patient_problems', 'bio', 'photo'),
+        }),
+        ('Услуги и проблемы', {
+            'fields': ('services',),
+            'description': 'Ниже добавьте проблемы, с которыми работает врач. Они будут доступны при записи на прием.',
+        }),
+    )
 
     def get_full_name(self, obj):
         return obj.user.get_full_name()
-    get_full_name.short_description = 'Врач'
+    get_full_name.short_description = 'ФИО'
 
 
 class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ['patient', 'doctor', 'service', 'appointment_date',
+    list_display = ['patient', 'doctor', 'patient_problem', 'service', 'appointment_date',
                     'status', 'created_at']
     list_filter = ['status', 'appointment_date', 'doctor']
     search_fields = ['patient__username', 'patient__email',
@@ -77,6 +111,7 @@ class CustomUserAdmin(UserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Service, ServiceAdmin)
+admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(Doctor, DoctorAdmin)
 admin.site.register(Appointment, AppointmentAdmin)
 admin.site.register(TestResult, TestResultAdmin)
@@ -85,6 +120,6 @@ admin.site.register(Feedback, FeedbackAdmin)
 admin.site.register(PageContent, PageContentAdmin)
 
 # Настройка админки
-admin.site.site_header = "Администрирование МедДиагностика"
-admin.site.site_title = "МедДиагностика"
+admin.site.site_header = 'Администрирование «Опора»'
+admin.site.site_title = 'Опора'
 admin.site.index_title = "Панель управления"

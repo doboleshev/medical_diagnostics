@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ equipment.name }} - Опора{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'equipment' %}">Оборудование</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ equipment.name }}</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-0">{{ equipment.name }}</h1>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-4 g-lg-5">
+        <div class="col-lg-5">
+            <div class="equipment-detail__image-wrap">
+                <img src="{{ equipment.image.url }}" class="equipment-detail__image" alt="{{ equipment.name }}">
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <p class="lead text-muted">{{ equipment.summary }}</p>
+            <div class="equipment-detail__content">{{ equipment.description|safe }}</div>
+            <p class="equipment-disclaimer text-muted small mt-4 mb-0">Имеются противопоказания, необходима консультация специалиста.</p>
+            <a href="{% url 'equipment' %}" class="btn btn-outline-brand mt-4">К списку оборудования</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,6 +4,10 @@ from . import views
 from .views import (
     ServiceListView,
     ServiceDetailView,
+    EquipmentListView,
+    EquipmentDetailView,
+    DoctorListView,
+    DoctorDetailView,
     UserRegisterView,
     AppointmentCreateView,
     AppointmentUpdateView
@@ -17,6 +21,12 @@ urlpatterns = [
     path('services/', ServiceListView.as_view(), name='services'),
     path('services/<slug:slug>/', ServiceDetailView.as_view(),
          name='service_detail'),
+    path('doctors/', DoctorListView.as_view(), name='doctors'),
+    path('doctors/<str:slug>/', DoctorDetailView.as_view(),
+         name='doctor_detail'),
+    path('equipment/', EquipmentListView.as_view(), name='equipment'),
+    path('equipment/<slug:slug>/', EquipmentDetailView.as_view(),
+         name='equipment_detail'),
     path('contact/', views.contact, name='contact'),
 
     # Авторизация

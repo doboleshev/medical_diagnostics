@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ doctor.user.get_full_name }} - Опора{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'doctors' %}">Наши специалисты</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ doctor.user.get_full_name }}</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-0">{{ doctor.user.get_full_name }}</h1>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-4 g-lg-5">
+        <div class="col-lg-4">
+            <div class="doctor-detail__photo-wrap">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="doctor-detail__photo" alt="{{ doctor.user.get_full_name }}">
+                {% else %}
+                <div class="doctor-detail__photo doctor-card__placeholder" aria-hidden="true">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                {% endif %}
+            </div>
+            <div class="doctor-detail__cta section-surface p-4 mt-4">
+                <h2 class="h5 mb-3">Записаться на прием</h2>
+                <p class="text-muted small mb-3">Выберите удобное время для консультации у {{ doctor.user.get_full_name }}.</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'appointment_create' %}?doctor={{ doctor.pk }}" class="btn btn-brand w-100">
+                    <i class="bi bi-calendar-check"></i> Записаться онлайн
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}?next={% url 'appointment_create' %}?doctor={{ doctor.pk }}" class="btn btn-brand w-100 mb-2">
+                    <i class="bi bi-box-arrow-in-right"></i> Войти для записи
+                </a>
+                <p class="text-center text-muted small mb-0">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="doctor-detail__intro mb-4">
+                <p class="doctor-detail__role mb-2">
+                    <strong>{{ doctor.get_specialization_display }}.</strong>
+                    Стаж работы {{ doctor.experience }} лет.
+                </p>
+            </div>
+
+            {% if doctor.get_patient_problems_list %}
+            <div class="doctor-detail__section mb-4">
+                <h2 class="h5 mb-3">С какими проблемами работает</h2>
+                <ul class="doctor-detail__problems list-unstyled mb-0">
+                    {% for problem in doctor.get_patient_problems_list %}
+                    <li>{{ problem }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if doctor.education %}
+            <div class="doctor-detail__section mb-4">
+                <p class="mb-2"><strong>Образование</strong></p>
+                <div class="doctor-detail__education">{{ doctor.education|linebreaks }}</div>
+            </div>
+            {% endif %}
+
+            {% if doctor.bio %}
+            <div class="doctor-detail__section mb-4">
+                <div class="doctor-detail__bio">{{ doctor.bio|safe }}</div>
+            </div>
+            {% endif %}
+
+            {% if doctor.services.exists %}
+            <div class="doctor-detail__section mb-4">
+                <h2 class="h5 mb-3">Услуги</h2>
+                <ul class="doctor-detail__services list-unstyled mb-0">
+                    {% for service in doctor.services.all %}
+                    {% if service.is_active %}
+                    <li class="mb-2">
+                        <a href="{% url 'service_detail' service.slug %}">{{ service.name }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <p class="doctor-detail__disclaimer text-muted small mb-0">Имеются противопоказания, необходима консультация специалиста.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

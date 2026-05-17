@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Личный кабинет - МедДиагностика{% endblock %}
+{% block title %}Личный кабинет - Опора{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -37,6 +37,7 @@
                                     <tr>
                                         <th>Дата и время</th>
                                         <th>Врач</th>
+                                        <th>Проблема</th>
                                         <th>Услуга</th>
                                         <th>Статус</th>
                                         <th>Действия</th>
@@ -47,6 +48,7 @@
                                     <tr>
                                         <td>{{ appointment.appointment_date|date:"d.m.Y H:i" }}</td>
                                         <td>{{ appointment.doctor.user.get_full_name }}</td>
+                                        <td>{{ appointment.patient_problem.title|default:"—" }}</td>
                                         <td>{{ appointment.service.name }}</td>
                                         <td>
                                             {% if appointment.status == 'pending' %}

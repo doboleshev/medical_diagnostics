@@ -1,84 +1,99 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Главная - МедДиагностика{% endblock %}
+{% block title %}Главная - Опора{% endblock %}
 
 {% block content %}
-<!-- Герой секция -->
-<section class="hero bg-primary text-white py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold">Современная медицинская диагностика</h1>
-                <p class="lead">Точная диагностика с использованием передовых технологий и оборудования экспертного класса</p>
-                <div class="mt-4">
-                    <a href="{% url 'appointment_create' %}" class="btn btn-light btn-lg me-3">
-                        <i class="bi bi-calendar-check"></i> Записаться онлайн
+<section class="hero-section py-5">
+    <div class="container py-lg-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <p class="text-uppercase fw-semibold mb-3 opacity-75">Медицинский центр «Опора»</p>
+                <h1 class="display-5 fw-bold mb-3">Современная медицинская диагностика для взрослых и детей</h1>
+                <p class="lead mb-4">Точные обследования, опытные врачи и комфортный сервис в одном месте.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'appointment_create' %}" class="btn btn-light btn-lg">
+                        <i class="bi bi-calendar-check"></i> Запись на прием
                     </a>
                     <a href="{% url 'services' %}" class="btn btn-outline-light btn-lg">
-                        <i class="bi bi-list-ul"></i> Наши услуги
+                        <i class="bi bi-list-check"></i> Наши услуги
                     </a>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <img src="{% static 'images/hero-image.jpg' %}" alt="Медицинская диагностика" 
-                     class="img-fluid rounded shadow">
+            <div class="col-lg-5">
+                <img src="{% static 'images/hero-clinic.jpg' %}" alt="Медицинский центр «Опора»" class="hero-image">
             </div>
         </div>
     </div>
 </section>
 
-<!-- Преимущества -->
+<section class="py-5 media-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <article class="media-card">
+                    <img src="{% static 'images/adults-care.jpg' %}" alt="Диагностика для взрослых" class="media-card__image">
+                    <div class="media-card__body">
+                        <h3>Медицина для взрослых</h3>
+                        <p class="text-muted mb-3">Комплексная диагностика, консультации специалистов и современные методы обследования.</p>
+                        <a href="{% url 'services' %}" class="btn btn-outline-brand">Смотреть услуги</a>
+                    </div>
+                </article>
+            </div>
+            <div class="col-lg-6">
+                <article class="media-card">
+                    <img src="{% static 'images/children-care.jpg' %}" alt="Диагностика для детей" class="media-card__image">
+                    <div class="media-card__body">
+                        <h3>Медицина для детей</h3>
+                        <p class="text-muted mb-3">Бережный подход, понятные рекомендации и диагностика в комфортной обстановке.</p>
+                        <a href="{% url 'appointment_create' %}" class="btn btn-brand">Записаться</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="py-5">
     <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col">
-                <h2 class="fw-bold">Почему выбирают нас</h2>
-                <p class="text-muted">Мы предоставляем качественные медицинские услуги</p>
-            </div>
+        <div class="section-heading text-center">
+            <h2>Почему выбирают нас</h2>
+            <p>Мы объединяем технологии, опыт врачей и внимательный сервис.</p>
         </div>
         <div class="row g-4">
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-shield-check display-6"></i>
-                        </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-card__body">
+                        <div class="feature-card__icon"><i class="bi bi-shield-check"></i></div>
                         <h5>Высокая точность</h5>
-                        <p class="text-muted">Современное оборудование обеспечивает точность диагностики до 99%</p>
+                        <p class="text-muted mb-0">Современное оборудование помогает получать достоверные результаты обследований.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-clock-history display-6"></i>
-                        </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-card__body">
+                        <div class="feature-card__icon"><i class="bi bi-clock-history"></i></div>
                         <h5>Быстрые результаты</h5>
-                        <p class="text-muted">Получите результаты обследования в течение 24 часов</p>
+                        <p class="text-muted mb-0">Оперативная диагностика и понятные рекомендации после приема.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-people display-6"></i>
-                        </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-card__body">
+                        <div class="feature-card__icon"><i class="bi bi-people"></i></div>
                         <h5>Опытные врачи</h5>
-                        <p class="text-muted">Квалифицированные специалисты с опытом работы более 10 лет</p>
+                        <p class="text-muted mb-0">Квалифицированные специалисты с внимательным подходом к каждому пациенту.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-building display-6"></i>
-                        </div>
-                        <h5>Современные кабинеты</h5>
-                        <p class="text-muted">Комфортные условия и новейшее диагностическое оборудование</p>
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-card__body">
+                        <div class="feature-card__icon"><i class="bi bi-building"></i></div>
+                        <h5>Комфортные кабинеты</h5>
+                        <p class="text-muted mb-0">Спокойная атмосфера, удобная запись и сопровождение на всех этапах.</p>
                     </div>
                 </div>
             </div>
@@ -86,184 +101,136 @@
     </div>
 </section>
 
-<!-- Популярные услуги -->
-<section class="py-5 bg-light">
+<section class="py-5 bg-white">
     <div class="container">
-        <div class="row mb-5">
-            <div class="col">
-                <h2 class="fw-bold text-center">Популярные услуги</h2>
-                <p class="text-muted text-center">Мы предлагаем широкий спектр диагностических услуг</p>
+        <div class="row g-4 align-items-center mb-4">
+            <div class="col-lg-6">
+                <img src="{% static 'images/equipment.jpg' %}" alt="Современное диагностическое оборудование" class="page-visual">
+            </div>
+            <div class="col-lg-6">
+                <div class="section-heading">
+                    <h2>Современное оборудование</h2>
+                    <p>Диагностические кабинеты оснащены техникой для точных и быстрых обследований.</p>
+                </div>
             </div>
         </div>
-        <div class="row g-4">
-            {% for service in services|slice:":4" %}
-            <div class="col-md-3">
-                <div class="card h-100">
-                    {% if service.image %}
-                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="text-primary mb-2">
-                            <i class="bi {{ service.icon }} fs-4"></i>
-                        </div>
-                        <h5 class="card-title">{{ service.name }}</h5>
-                        <p class="card-text">{{ service.description|safe|truncatechars:100 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">{{ service.price }} руб.</span>
-                            <a href="{% url 'service_detail' service.slug %}" class="btn btn-sm btn-outline-primary">
-                                Подробнее
-                            </a>
-                        </div>
-                    </div>
-                </div>
+        <div class="section-heading">
+            <h2>Диагностические услуги</h2>
+            <p>Основные направления обследований, доступные в нашем центре.</p>
+        </div>
+        <div class="row g-3">
+            {% for service in services %}
+            <div class="col-md-6 col-xl-4">
+                <a href="{% url 'service_detail' service.slug %}" class="service-tile">
+                    <span class="service-tile__icon"><i class="bi {{ service.icon }}"></i></span>
+                    <span>{{ service.name }}</span>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info mb-0">Услуги пока не добавлены. Их можно наполнить через админ-панель.</div>
             </div>
             {% endfor %}
         </div>
         <div class="text-center mt-4">
-            <a href="{% url 'services' %}" class="btn btn-primary">Все услуги</a>
+            <a href="{% url 'services' %}" class="btn btn-brand">Все услуги</a>
         </div>
     </div>
 </section>
 
-<!-- Контактная информация -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row mb-5">
-            <div class="col text-center">
-                <h2 class="fw-bold">Наши контакты</h2>
-                <p class="text-muted">Свяжитесь с нами удобным для вас способом</p>
-            </div>
-        </div>
-        <div class="row g-4 mb-5">
-            {% with contact=contact_info.first %}
-            {% if contact %}
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm text-center">
-                    <div class="card-body">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-geo-alt-fill display-4"></i>
-                        </div>
-                        <h5 class="card-title">Адрес</h5>
-                        <p class="card-text text-muted">{{ contact.address }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm text-center">
-                    <div class="card-body">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-telephone-fill display-4"></i>
-                        </div>
-                        <h5 class="card-title">Телефон</h5>
-                        <p class="card-text">
-                            <a href="tel:{{ contact.phone }}" class="text-decoration-none">{{ contact.phone }}</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm text-center">
-                    <div class="card-body">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-envelope-fill display-4"></i>
-                        </div>
-                        <h5 class="card-title">Email</h5>
-                        <p class="card-text">
-                            <a href="mailto:{{ contact.email }}" class="text-decoration-none">{{ contact.email }}</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm text-center">
-                    <div class="card-body">
-                        <div class="text-primary mb-3">
-                            <i class="bi bi-clock-fill display-4"></i>
-                        </div>
-                        <h5 class="card-title">Режим работы</h5>
-                        <p class="card-text text-muted small">{{ contact.working_hours|linebreaks }}</p>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="bi bi-info-circle"></i> Контактная информация будет добавлена администратором
-                </div>
-            </div>
-            {% endif %}
-            {% endwith %}
-        </div>
-    </div>
-</section>
-
-<!-- Форма обратной связи -->
 <section class="py-5">
     <div class="container">
-        <div class="row">
+        <div class="section-heading">
+            <h2>Наши специалисты</h2>
+            <p>Врачи медицинского центра «Опора» и проблемы, с которыми они работают.</p>
+        </div>
+        <div class="row g-4">
+            {% for doctor in doctors %}
+            <div class="col-md-6 col-xl-3">
+                <a href="{{ doctor.get_absolute_url }}" class="doctor-card doctor-card--link">
+                    {% if doctor.photo %}
+                    <img src="{{ doctor.photo.url }}" class="doctor-card__image" alt="{{ doctor.user.get_full_name }}">
+                    {% else %}
+                    <div class="doctor-card__placeholder" aria-hidden="true">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    {% endif %}
+                    <div class="doctor-card__body">
+                        <h5 class="mb-1">{{ doctor.user.get_full_name }}</h5>
+                        <p class="text-muted mb-2">{{ doctor.get_specialization_display }}</p>
+                        <p class="small mb-3">Стаж: {{ doctor.experience }} лет</p>
+                        {% include 'includes/doctor_problems_preview.html' %}
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info mb-0">Информация о врачах пока не добавлена.</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'doctors' %}" class="btn btn-outline-brand">Все специалисты</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="cta-band p-4 p-lg-5">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <h2 class="mb-3">Нужна консультация или запись на обследование?</h2>
+                    <p class="mb-0">Оставьте заявку онлайн или свяжитесь с нами по телефону. Мы подберем удобное время и ответим на ваши вопросы.</p>
+                </div>
+                <div class="col-lg-4 d-flex flex-wrap gap-3">
+                    <a href="{% url 'appointment_create' %}" class="btn btn-light">Записаться</a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline-light">Связаться с нами</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row g-4">
             <div class="col-lg-6">
-                <h2 class="fw-bold mb-4">Остались вопросы?</h2>
-                <p class="text-muted mb-4">Заполните форму обратной связи и наш специалист свяжется с вами в ближайшее время</p>
+                <div class="section-heading">
+                    <h2>Остались вопросы?</h2>
+                    <p>Заполните форму обратной связи, и наш специалист свяжется с вами.</p>
+                </div>
                 {% with contact=contact_info.first %}
                 {% if contact %}
-                <div class="card bg-light mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3">Быстрая связь</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-telephone text-primary fs-5 me-3"></i>
-                                    <div>
-                                        <small class="text-muted d-block">Телефон</small>
-                                        <a href="tel:{{ contact.phone }}" class="text-decoration-none fw-bold">{{ contact.phone }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-envelope text-primary fs-5 me-3"></i>
-                                    <div>
-                                        <small class="text-muted d-block">Email</small>
-                                        <a href="mailto:{{ contact.email }}" class="text-decoration-none fw-bold">{{ contact.email }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-clock text-primary fs-5 me-3"></i>
-                                    <div>
-                                        <small class="text-muted d-block">Режим работы</small>
-                                        <span class="fw-bold">{{ contact.working_hours|linebreaks }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="info-card">
+                    <div class="info-card__body">
+                        <p class="mb-2"><i class="bi bi-telephone me-2 text-primary"></i>{{ contact.phone }}</p>
+                        <p class="mb-2"><i class="bi bi-envelope me-2 text-primary"></i>{{ contact.email }}</p>
+                        <p class="mb-0"><i class="bi bi-clock me-2 text-primary"></i>{{ contact.working_hours|linebreaksbr }}</p>
                     </div>
                 </div>
                 {% endif %}
                 {% endwith %}
             </div>
             <div class="col-lg-6">
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h4 class="card-title mb-4">Обратная связь</h4>
-                        <form method="post" action="{% url 'feedback_create' %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <input type="text" name="name" class="form-control" placeholder="Ваше имя" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="tel" name="phone" class="form-control" placeholder="Телефон" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="email" name="email" class="form-control" placeholder="Email" required>
-                            </div>
-                            <div class="mb-3">
-                                <textarea name="message" class="form-control" rows="4" placeholder="Ваш вопрос" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Отправить</button>
-                        </form>
-                    </div>
+                <div class="section-surface p-4">
+                    <h4 class="mb-4">Обратная связь</h4>
+                    <form method="post" action="{% url 'feedback_create' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="text" name="name" class="form-control" placeholder="Ваше имя" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="tel" name="phone" class="form-control" placeholder="Телефон" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea name="message" class="form-control" rows="4" placeholder="Ваш вопрос" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-brand w-100">Отправить</button>
+                    </form>
                 </div>
             </div>
         </div>

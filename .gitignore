@@ -33,7 +33,6 @@ db.sqlite3
 db.sqlite3-journal
 /media
 /staticfiles
-/static
 
 # IDE
 .idea/
@@ -88,4 +87,3 @@ celerybeat.pid
 .mypy_cache/
 .dmypy.json
 dmypy.json
-

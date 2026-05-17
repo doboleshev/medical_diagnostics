@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Наши специалисты - Опора{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Наши специалисты</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-2">Наши специалисты</h1>
+        <p class="lead mb-0">Врачи медицинского центра «Опора» и реальные проблемы, с которыми они работают.</p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-4">
+        {% for doctor in doctors %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ doctor.get_absolute_url }}" class="doctor-card doctor-card--link">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="doctor-card__image" alt="{{ doctor.user.get_full_name }}">
+                {% else %}
+                <div class="doctor-card__placeholder" aria-hidden="true">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                {% endif %}
+                <div class="doctor-card__body">
+                    <h2 class="h5 mb-1">{{ doctor.user.get_full_name }}</h2>
+                    <p class="text-primary mb-2">{{ doctor.get_specialization_display }}</p>
+                    <p class="text-muted small mb-3">Стаж: {{ doctor.experience }} лет</p>
+                    {% include 'includes/doctor_problems_preview.html' %}
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info mb-0">Информация о врачах пока не добавлена.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
