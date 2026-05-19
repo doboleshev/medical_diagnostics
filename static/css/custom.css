@@ -105,10 +105,34 @@ a {
     border-radius: 999px;
 }
 
+.site-nav {
+    flex-wrap: nowrap;
+}
+
+.site-nav .nav-item {
+    flex-shrink: 0;
+}
+
+.site-nav .nav-link {
+    white-space: nowrap;
+}
+
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
     color: var(--brand-primary-dark);
     background: var(--brand-primary-light);
+}
+
+@media (min-width: 992px) and (max-width: 1399.98px) {
+    .site-nav .nav-link {
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+        font-size: 0.95rem;
+    }
+
+    .site-brand__subtitle {
+        font-size: 0.78rem;
+    }
 }
 
 .header-actions {

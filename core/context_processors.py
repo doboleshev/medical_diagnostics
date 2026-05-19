@@ -1,5 +1,6 @@
 from .models import ContactInfo
 
+
 def contact_info(request):
     """Добавляет контактную информацию в контекст всех шаблонов"""
     return {

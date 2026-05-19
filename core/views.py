@@ -1,22 +1,30 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .appointment_options import build_doctor_appointment_options
+from .forms import AppointmentForm, CustomUserCreationForm, FeedbackForm
 from .models import (
-    Service, Equipment, Doctor, PatientProblem, ContactInfo, PageContent,
-    Appointment, TestResult, Feedback
+    Appointment,
+    ContactInfo,
+    Doctor,
+    Equipment,
+    Feedback,
+    PageContent,
+    PatientProblem,
+    Service,
+    TestResult,
 )
-from .forms import CustomUserCreationForm, AppointmentForm, FeedbackForm
+from .services import appointments as appointment_service
 
 
 def home(request):
-    """Главная страница"""
+    """Главная страница."""
     services = Service.objects.filter(is_active=True)[:6]
     doctors = Doctor.objects.filter(is_active=True)[:4]
     contact_info = ContactInfo.objects.filter(is_active=True)
@@ -30,7 +38,7 @@ def home(request):
 
 
 class ServiceListView(ListView):
-    """Список услуг"""
+    """Список услуг."""
     model = Service
     template_name = 'services.html'
     context_object_name = 'services'
@@ -40,13 +48,12 @@ class ServiceListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_content'] = PageContent.objects.filter(
-            page='services').first()
+        context['page_content'] = PageContent.objects.filter(page='services').first()
         return context
 
 
 class ServiceDetailView(DetailView):
-    """Детальная страница услуги"""
+    """Детальная страница услуги."""
     model = Service
     template_name = 'service_detail.html'
     context_object_name = 'service'
@@ -55,7 +62,7 @@ class ServiceDetailView(DetailView):
 
 
 class EquipmentListView(ListView):
-    """Список оборудования"""
+    """Список оборудования."""
     model = Equipment
     template_name = 'equipment.html'
     context_object_name = 'equipment_items'
@@ -65,7 +72,7 @@ class EquipmentListView(ListView):
 
 
 class EquipmentDetailView(DetailView):
-    """Страница оборудования"""
+    """Страница оборудования."""
     model = Equipment
     template_name = 'equipment_detail.html'
     context_object_name = 'equipment'
@@ -77,17 +84,20 @@ class EquipmentDetailView(DetailView):
 
 
 class DoctorListView(ListView):
-    """Список врачей"""
+    """Список врачей."""
     model = Doctor
     template_name = 'doctors.html'
     context_object_name = 'doctors'
 
     def get_queryset(self):
-        return Doctor.objects.filter(is_active=True).select_related('user').order_by('order', 'user__last_name')
+        return Doctor.objects.filter(is_active=True).select_related('user').order_by(
+            'order',
+            'user__last_name',
+        )
 
 
 class DoctorDetailView(DetailView):
-    """Страница врача"""
+    """Страница врача."""
     model = Doctor
     template_name = 'doctor_detail.html'
     context_object_name = 'doctor'
@@ -95,11 +105,13 @@ class DoctorDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Doctor.objects.filter(is_active=True).select_related('user').prefetch_related('services')
+        return Doctor.objects.filter(is_active=True).select_related('user').prefetch_related(
+            'services',
+        )
 
 
 def about(request):
-    """Страница о компании"""
+    """Страница о компании."""
     doctors = Doctor.objects.filter(is_active=True)
     page_content = PageContent.objects.filter(page='about').first()
 
@@ -111,7 +123,7 @@ def about(request):
 
 
 def contact(request):
-    """Страница контактов"""
+    """Страница контактов."""
     contact_info = ContactInfo.objects.filter(is_active=True).first()
     page_content = PageContent.objects.filter(page='contacts').first()
 
@@ -121,7 +133,7 @@ def contact(request):
             form.save()
             messages.success(
                 request,
-                'Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.'
+                'Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.',
             )
             return redirect('contact')
     else:
@@ -136,33 +148,35 @@ def contact(request):
 
 
 class UserRegisterView(CreateView):
-    """Регистрация пользователя"""
+    """Регистрация пользователя."""
     form_class = CustomUserCreationForm
     template_name = 'registration/register.html'
     success_url = reverse_lazy('profile')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=password)
+        self.object = form.save()
+        user = authenticate(
+            username=form.cleaned_data.get('username'),
+            password=form.cleaned_data.get('password1'),
+        )
         login(self.request, user)
         messages.success(self.request, 'Регистрация прошла успешно!')
-        return response
+        return redirect(self.success_url)
 
 
 @login_required
 def profile(request):
-    """Личный кабинет пользователя"""
+    """Личный кабинет пользователя."""
     appointments = Appointment.objects.filter(
-        patient=request.user
+        patient=request.user,
     ).select_related(
-        'doctor__user' ,
-        'service' ,
-        'patient_problem' ,
+        'doctor__user',
+        'service',
+        'patient_problem',
     ).order_by('-appointment_date')
     test_results = TestResult.objects.filter(
-        appointment__patient=request.user).select_related('appointment')
+        appointment__patient=request.user,
+    ).select_related('appointment')
 
     context = {
         'appointments': appointments,
@@ -172,7 +186,7 @@ def profile(request):
 
 
 class AppointmentFormMixin:
-    """Общий контекст для формы записи на прием"""
+    """Общий контекст для формы записи на прием."""
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -181,7 +195,7 @@ class AppointmentFormMixin:
 
 
 class AppointmentCreateView(AppointmentFormMixin, LoginRequiredMixin, CreateView):
-    """Создание записи на прием"""
+    """Создание записи на прием."""
     model = Appointment
     form_class = AppointmentForm
     template_name = 'appointment_form.html'
@@ -191,7 +205,7 @@ class AppointmentCreateView(AppointmentFormMixin, LoginRequiredMixin, CreateView
         form.instance.patient = self.request.user
         messages.success(
             self.request,
-            'Запись на прием создана! Ожидайте подтверждения от администратора.'
+            'Запись на прием создана! Ожидайте подтверждения от администратора.',
         )
         return super().form_valid(form)
 
@@ -212,7 +226,7 @@ class AppointmentCreateView(AppointmentFormMixin, LoginRequiredMixin, CreateView
 
 
 class AppointmentUpdateView(AppointmentFormMixin, LoginRequiredMixin, UpdateView):
-    """Редактирование записи на прием"""
+    """Редактирование записи на прием."""
     model = Appointment
     form_class = AppointmentForm
     template_name = 'appointment_form.html'
@@ -221,6 +235,15 @@ class AppointmentUpdateView(AppointmentFormMixin, LoginRequiredMixin, UpdateView
     def get_queryset(self):
         return Appointment.objects.filter(patient=self.request.user)
 
+    def dispatch(self, request, *args, **kwargs):
+        appointment = self.get_object()
+        try:
+            appointment_service.ensure_appointment_editable(appointment)
+        except ValidationError as exc:
+            messages.error(request, exc.messages[0])
+            return redirect('profile')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         messages.success(self.request, 'Запись на прием обновлена!')
         return super().form_valid(form)
@@ -228,8 +251,14 @@ class AppointmentUpdateView(AppointmentFormMixin, LoginRequiredMixin, UpdateView
 
 @login_required
 def appointment_cancel(request, pk):
-    """Отмена записи на прием"""
+    """Отмена записи на прием."""
     appointment = get_object_or_404(Appointment, pk=pk, patient=request.user)
+    try:
+        appointment_service.ensure_appointment_cancellable(appointment)
+    except ValidationError as exc:
+        messages.error(request, exc.messages[0])
+        return redirect('profile')
+
     if request.method == 'POST':
         appointment.status = 'cancelled'
         appointment.save()
@@ -238,14 +267,16 @@ def appointment_cancel(request, pk):
     return render(
         request,
         'appointment_confirm_cancel.html',
-        {'appointment': appointment}
+        {'appointment': appointment},
     )
 
 
 @login_required
 def test_result_detail(request, pk):
-    """Просмотр результатов диагностики"""
+    """Просмотр результатов диагностики."""
     test_result = get_object_or_404(
-        TestResult, pk=pk, appointment__patient=request.user
+        TestResult,
+        pk=pk,
+        appointment__patient=request.user,
     )
     return render(request, 'test_result_detail.html', {'test_result': test_result})

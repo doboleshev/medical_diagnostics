@@ -4,8 +4,16 @@ from django.contrib.auth.models import User
 
 from .forms import DoctorAdminForm
 from .models import (
-    Service, Equipment, Doctor, PatientProblem, Appointment, TestResult,
-    ContactInfo, Feedback, PageContent
+    Appointment,
+    ContactInfo,
+    Doctor,
+    Equipment,
+    Feedback,
+    PageContent,
+    PatientProblem,
+    PatientProfile,
+    Service,
+    TestResult,
 )
 
 
@@ -102,7 +110,15 @@ class PageContentAdmin(admin.ModelAdmin):
 
 
 # Расширение стандартной админки пользователей
+class PatientProfileInline(admin.StackedInline):
+    model = PatientProfile
+    can_delete = False
+    extra = 0
+    fields = ('phone', 'birth_date')
+
+
 class CustomUserAdmin(UserAdmin):
+    inlines = (*UserAdmin.inlines, PatientProfileInline)
     list_display = UserAdmin.list_display + ('date_joined', 'last_login')
     list_filter = UserAdmin.list_filter + ('is_staff', 'is_superuser')
 
